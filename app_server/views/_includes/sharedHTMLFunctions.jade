@@ -1,0 +1,21 @@
+//-Output rating
+mixin outputRating(rating)
+  - for (var i = 1; i <= rating; i++)
+    span.glyphicon.glyphicon-star
+  - for (i = rating; i <5; i++)
+    span.glyphicon.glyphicon-star-empty
+
+//-Output open time 
+mixin openTime(opens)
+  - each time, day in opens
+    if time.length
+      p= day + " : " + time[0] + " : " + time[1]
+    else 
+      p= day + " : closed"
+
+mixin outputFacilities(facilities)
+  - each facilitie in facilities
+    span.label.label-warning
+      span.glyphicon.glyphicon-ok
+      | &nbsp; #{facilitie}
+    | &nbsp;
