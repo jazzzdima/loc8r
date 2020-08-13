@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
-const credentials = require('../../credentials');
+//const credentials = require('../../credentials');
 const readline = require('readline');
+
+console.log(process.env);
 
 let connectionDbString;
 if (process.env.NODE_ENV === 'production') {

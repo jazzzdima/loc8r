@@ -2,3 +2,4 @@ node_modules
 insert.js
 nodemon.json
 credentials.js
+.env
