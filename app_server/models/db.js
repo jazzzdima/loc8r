@@ -4,9 +4,9 @@ const readline = require('readline');
 
 let connectionDbString;
 if (process.env.NODE_ENV === 'production') {
-	connectionDbString = credentials.mongo.production.connectionString
+	connectionDbString = process.env.MONGODB_PROD_URI;
 } else {
-	connectionDbString = credentials.mongo.development.connectionString
+	connectionDbString = process.env.MONGODB_DEV_URI;
 }
 
 mongoose.connect(
