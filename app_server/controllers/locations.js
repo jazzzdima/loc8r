@@ -53,7 +53,7 @@ module.exports.homeList = (req, res) => {
 
 module.exports.locationInfo = (req, res) => {	
 	res.render('location-info', { 
-		title: 'Loaction info',
+		title: 'Location info',
 		locationHeader: {
 			title: 'Loc8r - find a place to work with wifi',
 		},
@@ -61,6 +61,7 @@ module.exports.locationInfo = (req, res) => {
 			name: 'Starcup',
 			rating: 3,
 			address: '1251 Sinelnikovo, Mira str, 154/5',
+			coords: {lat: 51.454545, lng: -0.954221},
 			opens: {
 				Monday: ['7:00am', '7:00pm'],
 				Tuesday: ['7:00am', '7:00pm'],
@@ -70,6 +71,22 @@ module.exports.locationInfo = (req, res) => {
 				Saturday: ['8:00am', '5:00pm'],
 				Sunday: [],
 			},
+			openingTimes: [{
+				days: 'Monday - Friday',
+				opening: '7:00am',
+				closing: '7:00pm',
+				closed: false,
+			},
+			{
+				days: 'Saturday',
+				opening: '8:00am',
+				closing: '5:00pm',
+				closed: false,
+			},
+			{
+				days: 'Sunday',				
+				closed: true,
+			}],
 			facilities: ['Hot drink', 'Food', 'Premium wifi'],
 			mapUrl: 'https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Clabel:C%7C40.718217,-73.998284&key=AIzaSyCp4hWjKqYC6GEa3mLzUrl4N4kgx-evZjI',
 			description: 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet',

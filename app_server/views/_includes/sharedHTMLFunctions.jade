@@ -5,7 +5,7 @@ mixin outputRating(rating)
   - for (i = rating; i <5; i++)
     span.glyphicon.glyphicon-star-empty
 
-//-Output open time 
+//-Output open time (my realization)
 mixin openTime(opens)
   - each time, day in opens
     if time.length
@@ -13,6 +13,15 @@ mixin openTime(opens)
     else 
       p= day + " : closed"
 
+//-Output open times (author realization)
+mixin openingTime(openingTimes)
+  - each open in openingTimes
+    if !open.closed
+      p= open.days + " : " + open.opening + " : " + open.closing
+    else
+      p= open.days + " : closed"      
+
+//-Output fasilities
 mixin outputFacilities(facilities)
   - each facilitie in facilities
     span.label.label-warning

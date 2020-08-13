@@ -2,8 +2,15 @@ const mongoose = require('mongoose');
 const credentials = require('../../credentials');
 const readline = require('readline');
 
+let connectionDbString;
+if (process.env.NODE_ENV === 'production') {
+	connectionDbString = credentials.mongo.production.connectionString
+} else {
+	connectionDbString = credentials.mongo.development.connectionString
+}
+
 mongoose.connect(
-	credentials.mongo.development.connectionString, {
+	connectionDbString, {
 		useNewUrlParser: true,
 		useUnifiedTopology: true
 	});
