@@ -72,11 +72,6 @@ module.exports.locationsCreate = function(req, res){
 		if (err) { sendJsonResponse(res, 400, err) }
 		else { sendJsonResponse(res, 201, location) }
 	});
-	
-	/*Location.create(, (err, location) => {
-		if (err) { sendJsonResponse(res, 400, err) }
-		else { sendJsonResponse(res, 201, location) }
-	});*/
 };
 
 module.exports.locationsReadOne = function(req, res){

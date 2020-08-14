@@ -6,9 +6,68 @@ const sendJsonResponse = (res, status, content) => {
 	res.json(content);
 };
 
+const doAddReview = (req, res, location) => {
+	if (!location) {
+		sendJsonResponse(res, 404, {
+			"message" : "locationId not found"
+		});
+	} else {
+		location.reviews.push({
+			author: req.body.author,
+			rating: req.body.rating,
+			text: req.body.text,
+		});
+		location.save((err, location) => {
+			let thisReview;
+			if (err) {
+				sendJsonResponse(res, 404, err);
+			} else {
+				updateAverageRating(location._id);
+				thisReview = location.reviews[location.reviews.length-1];
+				sendJsonResponse(res, 201, thisReview);
+			}
+		});
+	}
+};
+
+const updateAverageRating = locationId => {
+	Location.findById(locationId)
+		.select('rating reviews')
+		.exec((err, location) => {
+			if (!err) doSetAverageRating(location);
+		});
+};
+
+const doSetAverageRating = location => {
+	let i, reviewCount, ratingAverage, ratingTotal;
+	if (location.reviews && location.reviews.length > 0) {
+		reviewCount = location.reviews.length;
+		ratingTotal = 0;
+		for (i = 0; i < reviewCount; i++) {
+			ratingTotal += location.reviews[i].rating;
+		}
+		ratingAverage = parseInt(ratingTotal/reviewCount, 10);
+		location.rating = ratingAverage;
+		location.save(err => {
+			err ? console.log(err) : console.log('Average rationg update');
+		});
+	}
+};
+
 module.exports.reviewsCreate = function(req, res){
-	res.status(200);
-	res.json({ "status" : "success" });
+	let locationId = req.params.locationId;
+	if (locationId) {
+		Location.findById(locationId)
+			.select('reviews')
+			.exec((err, location) => {
+				err ? sendJsonResponse(res, 400, err) :
+					doAddReview(req, res, location);
+			});
+	} else {
+		sendJsonResponse(res, 404, {
+			"message" : "locationId required"
+		});
+	}
 };
 
 module.exports.reviewsReadOne = function(req, res){
