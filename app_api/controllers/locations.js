@@ -152,6 +152,22 @@ module.exports.locationsUpdateOne = function(req, res){
 };
 
 module.exports.locationsDeleteOne = function(req, res){
-	res.status(200);
-	res.json({ "status" : "success" });
+	let locationId = req.params.locationId;
+	if (locationId) {
+		Location
+			.findByIdAndRemove(locationId)
+			.exec((err, location) => {
+				if (err) {
+					sendJsonResponse(res, 404, err);
+					return;
+				}
+				sendJsonResponse(res, 204, {
+					"message" : "Delete location success"
+				});
+			});
+	} else {
+		sendJsonResponse(res, 404, {
+			"message" : "No locationId"
+		});
+	}
 };
