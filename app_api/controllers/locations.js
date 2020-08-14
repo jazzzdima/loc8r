@@ -45,7 +45,6 @@ module.exports.locationsCreate = function(req, res){
 	let location = new Location({
 		name: req.body.name,
 		address: req.body.address,
-		//rating: req.body.rating,
 		facilities: req.body.facilities.split(","),
 		coords: [parseFloat(req.body.lng),parseFloat(req.body.lat)],
 		openingTimes: [{
@@ -97,8 +96,59 @@ module.exports.locationsReadOne = function(req, res){
 };
 
 module.exports.locationsUpdateOne = function(req, res){
-	res.status(200);
-	res.json({ "status" : "success" });
+	if (!req.params.locationId) {
+		sendJsonResponse(res, 404, {"message":"locationId is required"});
+		return;
+	}
+	Location
+		.findById(req.params.locationId)
+		.select('-reviews -rating')
+		.exec((err, location) => {
+			if (!location) {
+				sendJsonResponse(res, 404, {
+					"message" : "Location not found"
+				});
+				return;
+			} else if (err) {
+				sendJsonResponse(res, 400, err);
+				return;
+			}
+			location.name = 
+				req.body.name ? req.body.name : location.name;
+			location.address = 
+				req.body.address ? req.body.address: location.address;
+			location.facilities = 
+				req.body.facilities ? req.body.facilities.split(",") :
+					location.facilities;
+			location.coords = [
+				req.body.lng ? 
+					parseFloat(req.body.lng) : location.coords[0],
+				req.body.lat ? 
+					parseFloat(req.body.lat) : location.coords[1]
+			];
+			location.openingTimes = [{
+				days: req.body.days1,
+				opening: req.body.opening1,
+				closing: req.body.closing1,
+				closed: req.body.closed1,
+			},
+			{
+				days: req.body.days2,
+				opening: req.body.opening2,
+				closing: req.body.closing2,
+				closed: req.body.closed2,
+			},
+			{
+				days: req.body.days3,
+				opening: req.body.opening3,
+				closing: req.body.closing3,
+				closed: req.body.closed3,
+			}];
+			location.save((err, location) => {
+				err ? sendJsonResponse(res, 404, err) : 
+					sendJsonResponse(res, 200, location);
+			});
+		});
 };
 
 module.exports.locationsDeleteOne = function(req, res){
