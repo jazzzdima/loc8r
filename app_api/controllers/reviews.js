@@ -115,8 +115,50 @@ module.exports.reviewsReadOne = function(req, res){
 };
 
 module.exports.reviewsUpdateOne = function(req, res){
-	res.status(200);
-	res.json({ "status" : "success" });
+	if (!req.params.locationId || !req.params.reviewId) {
+		sendJsonResponse(res, 404, {
+			"message" : "locationId or reviewId are required"
+		});
+		return;
+	}
+	Location
+		.findById(req.params.locationId)
+		.select('reviews')
+		.exec((err, location) => {
+			let thisReview;
+			if (!location) {
+				sendJsonResponse(res, 404, {
+					"message" : "location not found"
+				});
+			} else if (err) {
+				sendJsonResponse(res, 400, err);
+				return;
+			}
+			if (location.reviews && location.reviews.length > 0) {
+				thisReview = location.reviews.id(req.params.reviewId);
+				if (!thisReview) {
+					sendJsonResponse(res, 404, {
+						"message" : "reviewId not found"
+					});
+				} else {
+					thisReview.author = req.body.author;
+					thisReview.rating = req.body.rating;
+					thisReview.text = req.body.text;
+					location.save((err, location) => {
+						if (err) {
+							sendJsonResponse(res, 404, err);
+						} else {
+							updateAverageRating(location._id);
+							sendJsonResponse(res, 200, thisReview);
+						}
+					});
+				}
+			} else {
+				sendJsonResponse(res, 404, {
+					"message" : "No review to update"
+				});
+			}
+		});
 };
 
 module.exports.reviewsDeleteOne = function(req, res){
