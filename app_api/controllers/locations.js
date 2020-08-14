@@ -1,20 +1,6 @@
 const mongoose = require('mongoose');
 const Location = require('../models/locations');
 
-/*const theEarth = (function() {
-	earthRadius = 6371;
-	let getDistanceFromRads = rads => {
-		return parseFloat(rads * earthRadius);
-	};
-	let getRadsFromDistance = distance => {
-		return parseFloat(distance/earthRadius);
-	};
-	return {
-		getDistanceFromRads : getDistanceFromRads,
-		getRadsFromDistance : getRadsFromDistance,
-	};
-})();*/
-
 const sendJsonResponse = (res, status, content) => {
 	res.status(status);
 	res.json(content);
@@ -27,11 +13,6 @@ module.exports.locationsListByDistance = function(req, res){
 		type: "Point",
 		coordinates: [lng, lat]
 	};
-	/*let options = {
-		spherical: true,
-		num: 10,
-		maxDistance: theEarth.getRadsFromDistance(20)
-	};*/
 	if (!lng || !lat) {
 		sendJsonResponse(res, 404, 
 			{ "message" : "lng and lat query parameter are required" });
@@ -42,7 +23,6 @@ module.exports.locationsListByDistance = function(req, res){
 			$geoNear: {
 				near: point,
 				distanceField: 'distance',
-				//maxDistance: theEarth.getRadsFromDistance(2000),
 				maxDistance: 20000,
 				spherical: true,				
 			}
@@ -62,8 +42,41 @@ module.exports.locationsListByDistance = function(req, res){
 };
 
 module.exports.locationsCreate = function(req, res){
-	res.status(200);
-	res.json({ "status" : "success" });
+	let location = new Location({
+		name: req.body.name,
+		address: req.body.address,
+		//rating: req.body.rating,
+		facilities: req.body.facilities.split(","),
+		coords: [parseFloat(req.body.lng),parseFloat(req.body.lat)],
+		openingTimes: [{
+			days: req.body.days1,
+			opening: req.body.opening1,
+			closing: req.body.closing1,
+			closed: req.body.closed1,
+		},
+		{
+			days: req.body.days2,
+			opening: req.body.opening2,
+			closing: req.body.closing2,
+			closed: req.body.closed2,
+		},
+		{
+			days: req.body.days3,
+			opening: req.body.opening3,
+			closing: req.body.closing3,
+			closed: req.body.closed3,
+		}],
+	});
+
+	location.save((err, location) => {
+		if (err) { sendJsonResponse(res, 400, err) }
+		else { sendJsonResponse(res, 201, location) }
+	});
+	
+	/*Location.create(, (err, location) => {
+		if (err) { sendJsonResponse(res, 400, err) }
+		else { sendJsonResponse(res, 201, location) }
+	});*/
 };
 
 module.exports.locationsReadOne = function(req, res){
