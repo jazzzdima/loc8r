@@ -1,54 +1,65 @@
-module.exports.homeList = (req, res) => {	
-	res.render('locations-list', { 
-		title: 'Loc8r - find a place to work with wifi',
+const request = require('request');
+const apiOptions = {
+	server: "http://localhost:3000"
+};
+
+if (process.env.NODE_ENV === 'production') {
+	apiOptions.server = 'https://jazzzdima-loc8r.herokuapp.com';
+}
+
+const renderHomepage = (req, res, responseBody) => {
+	let message; 
+	let locations = responseBody;
+	if (!(responseBody instanceof Array) && responseBody.message) {
+		message = responseBody.message;
+		locations = [];
+	}
+	res.render('locations-list', {
+		title : 'Loc8r - find a place to work with wifi',
 		pageHeader: {
 			title: 'Loc8r',
 			straplines: 'Find a place to work with wifi near you!',
 			sidebar: 'Loc8r helps you find places to work when out and about Loc8r helps you find places to work when out and about Loc8r helps you find places to work when out and about Loc8r helps you find places to work when out and about',
 		},
-		locations: [{
-			name: 'Starcups',
-			address: '1251 Sinelnikovo, Mira str, 154/5',
-			rating: 3,
-			facilities: ['Hot drink', 'Food', 'Premium wifi'],
-			distance: '100m'
-		},
-		{
-			name: 'Cafe hero',
-			address: 'Nunc eget magna diam. Aenean et orci',
-			rating: 4,
-			facilities: ['Hot drink', 'Premium wifi'],
-			distance: '170m'
-		},
-		{
-			name: 'Ut nec nulla',
-			address: 'Mauris pellentesque lorem es',
-			rating: 2,
-			facilities: ['Hot drink', 'Food', 'Premium wifi'],
-			distance: '480m'
-		},
-		{
-			name: 'Phasellus',
-			address: 'Donec sed tristique mi',
-			rating: 3,
-			facilities: ['Food', 'Premium wifi'],
-			distance: '95m'
-		},
-		{
-			name: 'Nullam',
-			address: 'Sed vel fermentum nunc',
-			rating: 4,
-			facilities: ['Hot drink', 'Food', 'Premium wifi'],
-			distance: '195m'
-		},
-		{
-			name: 'Nam imperdiet',
-			address: 'Donec sed tristique mi',
-			rating: 4,
-			facilities: ['Food', 'Premium wifi'],
-			distance: '360m'
-		}],
+		locations : locations,
+		message : message,
 	});
+};
+
+const _formatDistance = distance => {
+	let numDistance, unit;
+	if (distance < 1000) {
+		numDistance = parseFloat(distance).toFixed(1);
+		unit = 'm';
+	} else {
+		numDistance = parseInt(distance / 1000, 10);
+		unit = 'km';
+	}
+	return numDistance + unit;
+};
+
+module.exports.homeList = (req, res) => {	
+	const path = '/api/locations';
+	const requestOptions = {
+		url : apiOptions.server + path,
+		method : 'GET',
+		json : {},
+		qs : {
+			//lng : 48.321846,
+			lng : 0,
+			//lat : 35.524470,
+			lat : 0,
+			maxDistance : 2000,
+		},
+	};
+	request(requestOptions, (err, response, body) => {
+		if (response.statusCode === 200 && body.length) {
+			body.forEach(element => {
+				element.distance = _formatDistance(element.distance);
+			});
+		}		
+		renderHomepage(req, res, body);
+	});	
 };
 
 module.exports.locationInfo = (req, res) => {	

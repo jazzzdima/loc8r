@@ -9,6 +9,13 @@ const sendJsonResponse = (res, status, content) => {
 module.exports.locationsListByDistance = function(req, res){
 	let lng = parseFloat(req.query.lng);
 	let lat = parseFloat(req.query.lat);
+
+	if (req.query.maxDistance) {
+		let maxDistance = parseFloat(req.query.maxDistance);
+	} else {
+		let maxDistance = 2000;
+	}		
+	
 	let point = {
 		type: "Point",
 		coordinates: [lng, lat]
@@ -23,7 +30,7 @@ module.exports.locationsListByDistance = function(req, res){
 			$geoNear: {
 				near: point,
 				distanceField: 'distance',
-				maxDistance: 20000,
+				maxDistance: maxDistance,
 				spherical: true,				
 			}
 		},	
