@@ -9,11 +9,12 @@ const sendJsonResponse = (res, status, content) => {
 module.exports.locationsListByDistance = function(req, res){
 	let lng = parseFloat(req.query.lng);
 	let lat = parseFloat(req.query.lat);
+	let maxDistance;
 
 	if (req.query.maxDistance) {
-		let maxDistance = parseFloat(req.query.maxDistance);
+		maxDistance = parseFloat(req.query.maxDistance);
 	} else {
-		let maxDistance = 2000;
+		maxDistance = 2000;
 	}		
 	
 	let point = {

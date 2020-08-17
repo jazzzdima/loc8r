@@ -15,11 +15,12 @@ mixin openTime(opens)
 
 //-Output open times (author realization)
 mixin openingTime(openingTimes)
-  - each open in openingTimes
-    if !open.closed
-      p= open.days + " : " + open.opening + " : " + open.closing
-    else
-      p= open.days + " : closed"      
+  if openingTimes
+    - each open in openingTimes
+      if !open.closed
+        p= open.days + " : " + open.opening + " : " + open.closing
+      else
+        p= open.days + " : closed"      
 
 //-Output fasilities
 mixin outputFacilities(facilities)
@@ -28,3 +29,12 @@ mixin outputFacilities(facilities)
       span.glyphicon.glyphicon-ok
       | &nbsp; #{facilitie}
     | &nbsp;
+
+mixin formatDate(dateString)
+  -let date = new Date(dateString);
+  -let monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август'];
+  -let d = date.getDate();
+  -let m = monthNames[date.getMonth()];
+  -let y = date.getFullYear();
+  -let output = `${d} ${m} ${y}`;
+  =output

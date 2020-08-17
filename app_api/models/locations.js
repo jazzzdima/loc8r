@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const openingTimeSchema = new mongoose.Schema({
-	days: {type: String, /*required: true*/},
+	days: {type: String, required: true},
 	opening: String,
 	closing: String,
-	closed: {type: Boolean, /*required: true*/}
+	closed: {type: Boolean, required: true}
 });
 
 const reviewSchema = new mongoose.Schema({
@@ -17,7 +17,7 @@ const reviewSchema = new mongoose.Schema({
 		required: true,
 	},
 	text: String,
-	timestamp: {
+	createdOn: {
 		type: Date,
 		"default": Date.now,
 	}
@@ -40,15 +40,10 @@ const locationSchema = new mongoose.Schema({
 		type: [Number],
 		index: '2dsphere',
 	},
-	//openTime: [openTimeSchema],
 	openingTime: [openingTimeSchema],
 	reviews: [reviewSchema],
 });
-//-My realization
-/*const openTimeSchema = new mongoose.Schema({
-	day: [String],
-});*/
-//-Author realization
+
 let Location = mongoose.model('Location', locationSchema);
 
 module.exports = Location;
