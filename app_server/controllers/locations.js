@@ -50,6 +50,22 @@ const _formatDistance = distance => {
 	return numDistance + unit;
 };
 
+const _showError = (req, res, status) => {
+	let title, text;
+	if (status === 404) {
+		title = '404, page not found';
+		text = 'Sorry, page not found';
+	} else {
+		title = `${status}, something's gone wrong`;
+		text = 'Something, somewhere, has gone little big wrong';
+	}
+	res.status(status);
+	res.render('generic-text', {
+		title : title,
+		text : text
+	});
+};
+
 module.exports.homeList = (req, res) => {	
 	const path = '/api/locations';
 	const requestOptions = {
@@ -80,11 +96,15 @@ module.exports.locationInfo = (req, res) => {
 		json : {},
 	};
 	request(requestOptions, (err, response, body) => {
-		body.coords = {
-			lng : body.coords[0],
-			lat : body.coords[1],
-		};
-		renderDetailPage(req, res, body);
+		if (response.statusCode === 200) {
+			body.coords = {
+				lng : body.coords[0],
+				lat : body.coords[1],
+			};
+			renderDetailPage(req, res, body);
+		} else {
+			_showError(req, res, response.statusCode);
+		}		
 	});	
 };
 
