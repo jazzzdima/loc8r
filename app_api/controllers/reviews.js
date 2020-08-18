@@ -20,7 +20,7 @@ const doAddReview = (req, res, location) => {
 		location.save((err, location) => {
 			let thisReview;
 			if (err) {
-				sendJsonResponse(res, 404, err);
+				sendJsonResponse(res, 400, err);
 			} else {
 				updateAverageRating(location._id);
 				thisReview = location.reviews[location.reviews.length-1];

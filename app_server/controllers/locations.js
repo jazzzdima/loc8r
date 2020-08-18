@@ -54,7 +54,7 @@ const renderDetailPage = (req, res, responseBody) => {
 			title: 'Loc8r - find a place to work with wifi',
 		},
 		locationData : responseBody,
-		locationReviews : responseBody.reviews
+		locationReviews : responseBody.reviews.reverse()
 	});
 };
 
@@ -63,7 +63,8 @@ const renderReviewForm = (req, res, locationDetail) => {
 		title: `Reviews ${locationDetail.name} on Loc8r`,
 		locationHeader: {
 			name: `Review ${locationDetail.name}`,
-		} 
+		},
+		error: req.query.err 
 	});
 };
 
@@ -130,7 +131,7 @@ module.exports.addReview = (req, res) => {
 };
 
 module.exports.doAddReview = (req, res) => {
-	const path = `/api/locations/${req.params.locationId}/reviews`;
+	const path = `/api/locations/${req.params.locationId}/reviews`;	
 	const postData = {
 		author : req.body.name,
 		rating : parseInt(req.body.rating, 10),
@@ -141,11 +142,19 @@ module.exports.doAddReview = (req, res) => {
 		method : 'POST',
 		json : postData,	
 	};
-	request(requestOptions, (err, response, body) => {
-		if (response.statusCode === 201) {
-			res.redirect(`/location/${req.params.locationId}`);
-		} else {
-			_showError(req, res, response.statusCode);
-		}		
-	});	
+	if (!postData.author || !postData.rating || !postData.text) {
+		res.redirect(`/location/${req.params.locationId}/reviews/new?err=val`);
+	} else {
+		request(requestOptions, (err, response, body) => {
+			if (response.statusCode === 201) {
+				res.redirect(`/location/${req.params.locationId}`);
+			} else if (response.statusCode === 400 && body.errors) {
+				res.redirect(
+					`/location/${req.params.locationId}/reviews/new?err=val`);
+			} else {
+				_showError(req, res, response.statusCode);
+			}		
+		});		
+	}
+	
 };
