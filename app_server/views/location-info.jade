@@ -17,7 +17,6 @@ block content
             .panel-heading
               h2.panel-title Opening hours
             .panel-body
-              //+openTime(locationData.opens)
               +openingTime(locationData.openingTimes)
           .panel.panel-primary
             .panel-heading
@@ -34,7 +33,7 @@ block content
         .col-xs-12
           .panel.panel-primary.review-panel
             .panel-heading
-              a.btn.btn-default.pull-right(href='/location/review/new') Add review
+              a.btn.btn-default.pull-right(href="/location/#{locationData._id}/reviews/new") Add review
               h2.panel-title Custom reviews
             .panel-body.review-container
               each review in locationReviews

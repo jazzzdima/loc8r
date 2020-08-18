@@ -7,6 +7,26 @@ if (process.env.NODE_ENV === 'production') {
 	apiOptions.server = 'https://jazzzdima-loc8r.herokuapp.com';
 }
 
+const getLocationInfo = (req, res, callback) => {
+	const path = `/api/locations/${req.params.locationId}`;
+	const requestOptions = {
+		url : apiOptions.server + path,
+		method : 'GET',
+		json : {},
+	};
+	request(requestOptions, (err, response, body) => {
+		if (response.statusCode === 200) {
+			body.coords = {
+				lng : body.coords[0],
+				lat : body.coords[1],
+			};
+			callback(req, res, body);
+		} else {
+			_showError(req, res, response.statusCode);
+		}		
+	});	
+};
+
 const renderHomepage = (req, res, responseBody) => {
 	let message; 
 	let locations = responseBody;
@@ -35,6 +55,15 @@ const renderDetailPage = (req, res, responseBody) => {
 		},
 		locationData : responseBody,
 		locationReviews : responseBody.reviews
+	});
+};
+
+const renderReviewForm = (req, res, locationDetail) => {
+	res.render('location-review-form', { 
+		title: `Reviews ${locationDetail.name} on Loc8r`,
+		locationHeader: {
+			name: `Review ${locationDetail.name}`,
+		} 
 	});
 };
 
@@ -89,30 +118,34 @@ module.exports.homeList = (req, res) => {
 };
 
 module.exports.locationInfo = (req, res) => {
-	const path = `/api/locations/${req.params.locationId}`;
+	getLocationInfo(req, res, (req, res, responseData) => {
+		renderDetailPage(req, res, responseData);
+	});
+};
+
+module.exports.addReview = (req, res) => {	
+	getLocationInfo(req, res, (req, res, responseData) => {
+		renderReviewForm(req, res, responseData);	
+	});
+};
+
+module.exports.doAddReview = (req, res) => {
+	const path = `/api/locations/${req.params.locationId}/reviews`;
+	const postData = {
+		author : req.body.name,
+		rating : parseInt(req.body.rating, 10),
+		text : req.body.review
+	};
 	const requestOptions = {
 		url : apiOptions.server + path,
-		method : 'GET',
-		json : {},
+		method : 'POST',
+		json : postData,	
 	};
 	request(requestOptions, (err, response, body) => {
-		if (response.statusCode === 200) {
-			body.coords = {
-				lng : body.coords[0],
-				lat : body.coords[1],
-			};
-			renderDetailPage(req, res, body);
+		if (response.statusCode === 201) {
+			res.redirect(`/location/${req.params.locationId}`);
 		} else {
 			_showError(req, res, response.statusCode);
 		}		
 	});	
-};
-
-module.exports.addReview = (req, res) => {	
-	res.render('location-review-form', { 
-		title: 'Add review',
-		locationHeader: {
-			name: 'Starcups',
-		} 
-	});
 };
