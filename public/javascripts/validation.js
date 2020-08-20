@@ -1,7 +1,7 @@
-$('#addReview').submit(function(e) {
+$('#addReview').submit(function(e) {	
 	$('.alert.alert-danger').hide();
-	if (!$('input#name').val() || !$('select#rating').val() || 
-		!$('input#review').val()) {
+	if (!$('input#name').val() || !$('select#raiting').val() || 
+		!$('textarea#review').val()) {
 		if ($('.alert.alert-danger').length) {
 			$('.alert.alert-danger').show();
 		} else {

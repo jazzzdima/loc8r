@@ -27,8 +27,8 @@ const getLocationInfo = (req, res, callback) => {
 	});	
 };
 
-const renderHomepage = (req, res, responseBody) => {
-	let message; 
+const renderHomepage = (req, res/*, responseBody*/) => {
+	/*let message; 
 	let locations = responseBody;
 
 	if (!(responseBody instanceof Array) && responseBody.message) {
@@ -44,6 +44,14 @@ const renderHomepage = (req, res, responseBody) => {
 		},
 		locations : locations,
 		message : message,
+	});*/
+	res.render('locations-list', {
+		title : 'Loc8r - find a place to work with wifi',
+		pageHeader: {
+			title: 'Loc8r',
+			straplines: 'Find a place to work with wifi near you!',
+			sidebar: 'Loc8r helps you find places to work when out and about Loc8r helps you find places to work when out and about Loc8r helps you find places to work when out and about Loc8r helps you find places to work when out and about',
+		},		
 	});
 };
 
@@ -64,7 +72,8 @@ const renderReviewForm = (req, res, locationDetail) => {
 		locationHeader: {
 			name: `Review ${locationDetail.name}`,
 		},
-		error: req.query.err 
+		error: req.query.err,
+		url: req.originalUrl
 	});
 };
 
@@ -97,7 +106,7 @@ const _showError = (req, res, status) => {
 };
 
 module.exports.homeList = (req, res) => {	
-	const path = '/api/locations';
+	/*const path = '/api/locations';
 	const requestOptions = {
 		url : apiOptions.server + path,
 		method : 'GET',
@@ -115,7 +124,8 @@ module.exports.homeList = (req, res) => {
 			});
 		}		
 		renderHomepage(req, res, body);
-	});	
+	});	*/
+	renderHomepage(req, res);
 };
 
 module.exports.locationInfo = (req, res) => {
