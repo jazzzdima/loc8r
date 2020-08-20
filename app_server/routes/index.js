@@ -5,13 +5,15 @@ var router = express.Router();
 
 /* Loactions routes */
 router.get('/', 
+	controllerOthers.angularApp);
+/*router.get('/', 
 	controllerLocations.homeList);
 router.get('/location/:locationId', 
 	controllerLocations.locationInfo);
 router.get('/location/:locationId/reviews/new', 
 	controllerLocations.addReview);
 router.post('/location/:locationId/reviews/new', 
-	controllerLocations.doAddReview);
+	controllerLocations.doAddReview);*/
 
 /* Others routes */
 router.get('/about', controllerOthers.about);
