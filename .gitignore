@@ -3,3 +3,4 @@ insert.js
 nodemon.json
 credentials.js
 .env
+.babelrc

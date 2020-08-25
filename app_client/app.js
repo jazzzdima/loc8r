@@ -1,13 +1,17 @@
-function config($routeProvider) {
-	$routeProvider
-		.when('/', {
-			templateUrl: 'home/home.view.html',
-			controller: 'homeController',
-			controllerAs: 'vm'
-		})
-		.otherwise({redirectTo: '/'});
-}
+(function () {
+	function config($routeProvider) {
+		$routeProvider
+			.when('/', {
+				templateUrl: 'home/home.view.html',
+				controller: 'homeController',
+				controllerAs: 'vm'
+			})
+			.otherwise({redirectTo: '/'});
+	}
 
-angular
-	.module('loc8rApp', ['ngRoute'])
-	.config(['$routeProvider', config]);
+	config.$inject = ['$routeProvider'];
+
+	angular
+		.module('loc8rApp', ['ngRoute'])
+		.config(['$routeProvider', config]);
+})();
