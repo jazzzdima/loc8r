@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "build": "npx babel app_client/**/*.js -o public/angular/loc8r.min.js",
-    "watch": "nodemon -e js,mjs,json,jade ./bin/www"    
+    "watch": "nodemon -e js,mjs,json,jade ./bin/www"
   },
   "engines": {
     "node": "~12.18.2",
@@ -23,8 +23,9 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/preset-env": "^7.11.0",
     "babel-preset-minify": "^0.5.1",
     "nodemon": "^2.0.4"
   }
