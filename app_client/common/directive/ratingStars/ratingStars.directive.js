@@ -1,4 +1,4 @@
- (function () {
+(function () {
 	function ratingStars() {
 		return {
 			restrict: 'EA',
