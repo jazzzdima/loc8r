@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const controllerLocations = require('../controllers/locations');
 const controllerReviews = require('../controllers/reviews');
+const controllerAuth = require('../controllers/authentication');
 
 /* Loactions routes */
 router.get('/locations', 
@@ -24,5 +25,9 @@ router.put('/locations/:locationId/reviews/:reviewId',
 	controllerReviews.reviewsUpdateOne);
 router.delete('/locations/:locationId/reviews/:reviewId', 
 	controllerReviews.reviewsDeleteOne);
+
+/*Authenticate routes*/
+router.post('/register', controllerAuth.register);
+router.post('/login', controllerAuth.login);
 
 module.exports = router;

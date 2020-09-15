@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-//const credentials = require('../../credentials');
 const readline = require('readline');
 
 let connectionDbString;
